@@ -5,25 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
+    [SerializeField] AudioClip successClip;
+    [SerializeField] AudioClip crashClip;
+
     float levelLoadDelay = 2f;
+    bool isTransitioning = false;
 
     void OnCollisionEnter(Collision other)
     {
-        switch (other.gameObject.tag)
+        if (isTransitioning == false)
         {
-            case "Fuel":
-                Debug.Log("You picked up fuel");
-                break;
-            case "Friendly":
-                Debug.Log("This thing is friendly");
-                break;
-            case "Finish":
-                StartSuccessSequence();
-                Debug.Log("Congrats, yo, You finished!");
-                break;
-            default:
-                StartCrashSequence();
-                break;
+            switch (other.gameObject.tag)
+            {
+                case "Fuel":
+                    Debug.Log("You picked up fuel");
+                    break;
+                case "Friendly":
+                    Debug.Log("This thing is friendly");
+                    break;
+                case "Finish":
+                    StartSuccessSequence();
+                    Debug.Log("Congrats, yo, You finished!");
+                    break;
+                default:
+                    StartCrashSequence();
+                    break;
+            }
         }
     }
 
@@ -46,12 +53,18 @@ public class CollisionHandler : MonoBehaviour
 
     void StartCrashSequence()
     {
+        isTransitioning = true;
+        GetComponent<AudioSource>().Stop();
+        GetComponent<AudioSource>().PlayOneShot(crashClip);
         GetComponent<Movement>().enabled = false;
         Invoke("ReloadLevel", levelLoadDelay);
     }
 
     void StartSuccessSequence()
     {
+        isTransitioning = true;
+        GetComponent<AudioSource>().Stop();
+        GetComponent<AudioSource>().PlayOneShot(successClip);
         GetComponent<Movement>().enabled = false;
         Invoke("LoadNextLevel", levelLoadDelay);
     }
