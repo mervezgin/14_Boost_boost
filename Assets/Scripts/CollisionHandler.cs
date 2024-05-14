@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour
 {
@@ -18,8 +19,13 @@ public class CollisionHandler : MonoBehaviour
                 Debug.Log("Congrats, yo, You finished!");
                 break;
             default:
-                Debug.Log("Sorry, you blew up");
+                ReloadLevel();
                 break;
         }
+    }
+
+    void ReloadLevel()
+    {
+        SceneManager.LoadScene("Boost"); // you can write integer 0 or SceneManager.GetActiveScene().buildIndex
     }
 }
