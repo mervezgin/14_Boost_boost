@@ -12,11 +12,17 @@ public class CollisionHandler : MonoBehaviour
 
     float levelLoadDelay = 2f;
     bool isTransitioning = false;
+    bool collisionDisabled = false;
+
+    void Update()
+    {
+        RespondToDebugKeys();
+    }
 
     void OnCollisionEnter(Collision other)
     {
-        if (isTransitioning == false)
-        {
+        if (isTransitioning|| collisionDisabled) { return; }
+ 
             switch (other.gameObject.tag)
             {
                 case "Fuel":
@@ -33,7 +39,7 @@ public class CollisionHandler : MonoBehaviour
                     StartCrashSequence();
                     break;
             }
-        }
+        
     }
 
     void ReloadLevel()
@@ -71,5 +77,17 @@ public class CollisionHandler : MonoBehaviour
         GetComponent<AudioSource>().PlayOneShot(successClip);
         GetComponent<Movement>().enabled = false;
         Invoke("LoadNextLevel", levelLoadDelay);
+    }
+
+    void RespondToDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadNextLevel();
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionDisabled = !collisionDisabled; //toggle collision 
+        }
     }
 }
